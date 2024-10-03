@@ -1,0 +1,26 @@
+{
+    "todos": [
+      {
+        "id": 1,
+        "task": "Buy groceries",
+        "priority": "high",
+        "due_date": "2024-02-21",
+        "completed": false
+      },
+      {
+        "id": 2,
+        "task": "Finish report",
+        "priority": "medium",
+        "due_date": "2024-02-25",
+        "completed": false
+      },
+      {
+        "id": 3,
+        "task": "Call mom",
+        "priority": "low",
+        "due_date": "2024-02-20",
+        "completed": true
+      }
+    ]
+  }
+  
