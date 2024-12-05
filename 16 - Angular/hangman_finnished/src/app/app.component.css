@@ -1,0 +1,12 @@
+.endMessage {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.won {
+    color: green;
+}
+
+.lost {
+    color: red;
+}

@@ -1,0 +1,5 @@
+<div>
+    @for (char of letters; track char){
+        <button [disabled]="false" (click)="chooseCharacter(char)">{{char}}</button>
+    }
+</div>
