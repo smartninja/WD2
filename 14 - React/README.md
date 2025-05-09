@@ -6,7 +6,7 @@ To learn about React, we'll use it's official tutorial to build a Tic-Tac-Toe ga
 
 ## Build a game with react
 
-First we'll create react app. We'll use `vite` for this. This lesson uses vite vewrsion 6.0, but later versions should work the same.
+First we'll create react app. We'll use `vite` for this. This lesson uses vite version 6.0, but later versions should work the same.
 
 ```bash
 npm create vite@6.0.0
@@ -16,6 +16,7 @@ Name the project **tic-tac-toe** and select **React** as the framework and **Jav
 
 ```bash
 cd tic-tac-toe
+npm install
 npm run dev
 ```
 
@@ -28,16 +29,16 @@ node_modules/   -------- a directory of all dependencies
 index.html      -------- a main html file to which our app will get rendered into. Note the <div id="root"> tag
 package.json    -------- npm package file
 package-lock.json ------ npm lock file
-public/         -------- a folder for static assets that should be accessable after the build
+public/         -------- a folder for static assets that should be accessible after the build
 README.md       -------- a README markdown file where you can describe your project
-src/            -------- the main directory for our souce code
+src/            -------- the main directory for our source code
 vite.config.js  -------- the configuration file for vite, this configuration helps building react
 eslint.config.js ------- a default configuration file for ESlint - we'll talk about this in lesson about code quality
 ```
 
 ## Style sheets
 
-Since we already know a lot about CSS and this lesson is not intended for learning about CSS we'll just replace the contents of `App.css` with the code below:
+Since we already know a lot about CSS and this lesson is not intended for learning about CSS we'll just replace the contents of `src/App.css` with the code below:
 
 ```css
 .board {
@@ -65,11 +66,11 @@ Since we already know a lot about CSS and this lesson is not intended for learni
 }
 ```
 
-Also let's remove all the base CSS that we can find in the `index.css` file.
+Also let's remove all the base CSS that we can find in the `src/index.css` file.
 
 ## Create your first component
 
-React apps are built by creating components that communicate amongst each other. A component is part of reusable code that creates a part of the user interface. Let's create our first component in the `App.js` file:
+React apps are built by creating components that communicate amongst each other. A component is part of reusable code that creates a part of the user interface. Let's create our first component in the `App.jsx` file:
 
 ```jsx
 import './App.css';
@@ -212,7 +213,7 @@ In the function/component body, we can now use the value of this `text` variable
 
 As of now our components can only display static data that we hard-coded in. Any functional front-end application needs to do more than that - it needs to be able to respond to the users' clicks and actions - it needs to be interactive.
 
-We've seen how to add event listeners to the DOM elements in a previous lesson. In React, the syntax is similar: We need to define a function that handles the event and we need to pass that function as the event listener to the HMTL tag.
+We've seen how to add event listeners to the DOM elements in a previous lesson. In React, the syntax is similar: We need to define a function that handles the event and we need to pass that function as the event listener to the HTML tag.
 
 ```jsx
 import './App.css';
@@ -341,9 +342,9 @@ function App() {
   const [squares, setSquares] = useState(Array(9).fill(null));
 
   function handleClick(squareId) {
-    let newSqares = [...squares];
-    newSqares[squareId] = 'X';
-    setSquares(newSqares);
+    let newSquares = [...squares];
+    newSquares[squareId] = 'X';
+    setSquares(newSquares);
   }
 
   return (
@@ -378,7 +379,7 @@ In the `App` component we now use `useState` hook for the entire board. We set t
 
 The `handleClick` function is a click handler, that gets assigned as the event listener in the `Square` component. In it we first create a new board state from the old (so we don't mutate the state - we'll learn more about that later), We then set the appropriate field to "X" and save the new state with the `setSquares` setter function.
 
-In the template of this main component, we display all of the squares, pass the appropriate `text` value to them and pass the `handleClick` function with the appropriate `squareId` to it. Note that we use the arrow function here. This is so that we actually pass a function and not the return value of the `handleClick` function that we're calling with the `sqareId` parameter.
+In the template of this main component, we display all of the squares, pass the appropriate `text` value to them and pass the `handleClick` function with the appropriate `squareId` to it. Note that we use the arrow function here. This is so that we actually pass a function and not the return value of the `handleClick` function that we're calling with the `squareId` parameter.
 
 ## Toggle players
 
@@ -391,9 +392,9 @@ function App() {
   const [xIsNext, setXisNext] = useState(true);
 
   function handleClick(squareId) {
-    let newSqares = [...squares];
-    newSqares[squareId] = xIsNext ? 'X' : "0";
-    setSquares(newSqares);
+    let newSquares = [...squares];
+    newSquares[squareId] = xIsNext ? 'X' : "0";
+    setSquares(newSquares);
     setXisNext(!xIsNext);
   }
 
@@ -436,7 +437,7 @@ function App() {
 
   function handleClick(squareId) {
       // ...
-      let winner = calculateWinner(newSqares);
+      let winner = calculateWinner(newSquares);
       if (winner) {
           console.log(winner + ' wins!');
       }
@@ -572,10 +573,10 @@ function App() {
     if (squares[squareId] || calculateWinner(squares) ) {
       return;
     }
-    let newSqares = [...squares];
-    newSqares[squareId] = xIsNext ? 'X' : "0";
-    setSquares(newSqares);
-    let winner = calculateWinner(newSqares);
+    let newSquares = [...squares];
+    newSquares[squareId] = xIsNext ? 'X' : "0";
+    setSquares(newSquares);
+    let winner = calculateWinner(newSquares);
     updateStatusRow(winner, !xIsNext ? 'X' : 'O');
     setXisNext(!xIsNext);
   }
