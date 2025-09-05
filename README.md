@@ -1,6 +1,26 @@
-# Web development 2 - curriculum
+# Web Development 2 - Curriculum
 
 This course is designed to provide a comprehensive introduction to modern web development, covering both back-end and front-end technologies as well as touching on deployment and testing practices. Students will gain hands-on experience in building full-stack applications using a set of modern frameworks and tools, preparing them for real-world software development scenarios. By the end of the course, students will have built a fully functional web application, gaining a deeper understanding of how different parts of a web application interact and how to test and deploy their applications.
+
+## 🚫 Usage Restrictions
+
+⚠️ **This project is NOT open source and is NOT licensed for reuse.**
+
+All content, code, and assets in this repository are protected under **All Rights Reserved** copyright. You may not:
+
+- Fork this repository
+- Use any part of the code or content
+- Share or redistribute it
+- Modify or create derivative works
+- Use it in any commercial or non-commercial project
+
+Please respect the license terms. If you are interested in licensing or collaboration, contact:
+
+📩 [info@smartninja.si](info@smartninja.si)
+
+## 📄 License
+
+See the [LICENSE.md](./LICENSE.md) file for full details.
 
 ## Prerequisites
 
