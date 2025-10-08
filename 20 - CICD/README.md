@@ -163,7 +163,7 @@ To be able to upload our code to Firebase, GitHub Actions of course needs to aut
 
 You can get the `GCP_SA_KEY` in Firebase settings. Go to the project's settings (gear icon next to "Project overview"), then select **Service account** tab and click **Generate new private key**. It should download as a .json file.
 
-We need to save this key securely in GitHub. For this we can use secrets. In GitHub we'll add them by going to our repository and then  `settings/secrets/actions` . Here we should create a new repository secret with the key **GCP_SA_KEY**. This is stored encrypted and is used on every CI/CD run. It's value should be 
+We need to save this key securely in GitHub. For this we can use secrets. In GitHub we'll add them by going to our repository and then  `settings/secrets/actions` . Here we should create a new repository secret with the key **GCP_SA_KEY**. This is stored encrypted and is used on every CI/CD run. It's value should be the entire contents of the JSON file that we've downloaded.
 
 ## Conclusion
 
