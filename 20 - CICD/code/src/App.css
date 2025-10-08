@@ -1,0 +1,38 @@
+* {
+  box-sizing: border-box;
+  font-size: 45px;
+}
+
+body {
+  font-family: sans-serif;
+  margin: 20px;
+  font-size: 40px;
+}
+
+.square {
+  background: #fff;
+  border: 1px solid #999;
+  float: left;
+  text-align: center;
+  width: 1rem;
+  height: 1rem;
+}
+
+.board-row:after {
+  clear: both;
+  content: '';
+  display: table;
+}
+
+.status {
+  margin-bottom: 10px;
+}
+
+.game {
+  display: flex;
+  flex-direction: row;
+}
+
+.game-info {
+  margin-left: 20px;
+}
