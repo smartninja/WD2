@@ -55,7 +55,13 @@ Change **/main.py**
 
 ```
 
-With this we have created a simple API for listing all users from the database. You can check the data from the url `/api/list_all_users`.
+We have mentioned Blueprints toward the end of WD1, but to refresh ...
+
+A Blueprint in Flask is like a mini-application that defines routes, views, templates, static files, and other functionality — but without being a full Flask app itself. You later register these blueprints with the main Flask application.
+
+The purpose of a Blueprint is to helps you **split your app into logical components or modules** — like “users”, “auth”, “admin”, “blog”, etc. In most applications API is a stand-alone module that fits neatly into a Blueprint.
+
+With the code above we have created a simple API for listing all users from the database. You can check the data from the url `/api/list_all_users`.
 
 - Why can we call this an API?
 - What is wrong with it, what could be improved?
@@ -92,6 +98,12 @@ REST (Representational State Transfer) is a set of guidelines to create a good w
   - **Better Caching:** Stateless nature allows for easier caching mechanisms. Responses from the server can be cached based on the request parameters without worrying about the server maintaining session-specific data. This improves overall system performance by reducing the need to regenerate the same responses repeatedly.
   - **Scalability in Microservices Architecture:** Stateless APIs align well with microservices architecture, where services are designed to be independent and self-contained. Each microservice can operate without relying on shared state, making it easier to scale individual services horizontally.
   - **Cross-Platform Compatibility:** Stateless APIs make it simpler to build cross-platform applications. Since each request contains all the necessary information, clients built using different technologies or running on different platforms can interact with the API without compatibility issues related to session management.
+
+#### HTTP Header fields and response codes
+
+RESTfull APIs are rely on HTTP protocol through which we also communicate some meta information about the request/response. These meta information is stored and transfered in the HTTP header. There are [many HTTP header](https://en.wikipedia.org/wiki/List_of_HTTP_header_fields) fields in which we can do that, but the most important is the first line of the HTTP header which tells us if the response succeeded or not. 
+
+We've all seen a *404 - Not found* response, but there are many status codes. The most common that we never see is a 200 - OK, but we can also communicate that the resource has been deleted, moved, is not accessible, requires authorization and many others. You can find the entire list of HTTP response codes with explanations on [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status) or on [Wikpedia](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
 
 ## Create a RESTfull API
 
@@ -149,6 +161,8 @@ and add serialization to the User class in **model.py**:
  def get_all_users():
 ```
 
+Serialization is a process of converting complex Python objects into a format that can be sent over the web — usually JSON. We need to serialize our data whenever we leave the Python and we want to communicate with the other services.
+
 This gives us the first functionality - listing users.
 
 What other functionalities do we need?
@@ -180,7 +194,6 @@ def store():
     try:
         user = add_user(email=email, name=name, password=password)
         return jsonify({
-            'success': True,
             'created': user.serialize()
         })
     except:
@@ -203,7 +216,6 @@ def update(user_id):
     try:
         user = update_user(id=user_id, email=email, name=name, password=password)
         return jsonify({
-            'success': True,
             'updated': user.serialize()
         })
     except:
@@ -240,7 +252,6 @@ def destroy(user_id):
     try:
         user = delete_user(id=user_id)
         return jsonify({
-            'success': True,
             'deleted': f'<User id:{user_id}>'
         })
     except:
