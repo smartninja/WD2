@@ -41,6 +41,11 @@ UPLOAD_FOLDER = './upload'
 We'll be using this setting in the API code, so let's import it there. We'll also create the controller function the **api.py** file:
 
 ```python
+@api.route('/users/<user_id>/avatar', methods=['GET'])
+def avatar_show(user_id):
+    filename = 'avatar_' + user_id
+    return send_file(os.path.join(UPLOAD_FOLDER, filename), mimetype='image/jpeg')
+
 @api.route('/users/<user_id>/avatar', methods=['POST'])
 def avatar_crete(user_id):
     if 'avatar' not in request.files:
@@ -49,7 +54,7 @@ def avatar_crete(user_id):
         }), 422
     
     file = request.files['avatar']
-    filename = file.filename
+    filename = 'avatar_' + user_id
 
     file.save(os.path.join(UPLOAD_FOLDER, filename))
 
@@ -60,7 +65,9 @@ def avatar_crete(user_id):
 
 ```
 
-In the first line of the controller, we check if the `'avatar'` field is present in the request and return a JSON error response with HTTP response code if that's missing.
+The first route returns the photo of the avatar once it's already uploaded. We need this to be able to return a valid url when we actually create the photo.
+
+In the first line of the create route controller, we check if the `'avatar'` field is present in the request and return a JSON error response with HTTP response code if that's missing.
 
 Then, we assign the file to a variable and get it's file name. This is the name of the file as the user uploaded it. With `file.save()` method, we'll save the file to the upload folder previously set in the configurations. We're using `os.path.join` method for joining path so that we can prevent some common errors in path concatenation.
 

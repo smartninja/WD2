@@ -1,28 +1,30 @@
 # Lesson 08 - JavaScript advanced topics
 
-
-
-
-
 In this lesson we'll look at some of the more advanced JavaScript functionality. We'll do that by building the logic for a to-do application.
+
+We'll be writing our code in a setup similar that we had in the previous lesson, a HTML document that we can view with a VS Code's live server. However we can also run the code with node.js by executing `node main.js` in our console.
 
 ## Classes
 
 First we'll create a JS class that represents a single to-do object.
 
-In **task.js** write the following code:
+Create **main.js** write the following code:
 
 ```javascript
 class Task {
-  constructor(description, isCompleted = false) {
-    this.description = description;
-    this.isCompleted = isCompleted;
+    constructor(description, isCompleted = false) {
+      this.description = description;
+      this.isCompleted = isCompleted;
+    }
+  
+    toggleCompletion() {
+      this.isCompleted = !this.isCompleted;
+    }
   }
 
-  toggleCompletion() {
-    this.isCompleted = !this.isCompleted;
-  }
-}
+let todo = new Task('Wash the trash');
+
+console.log(todo);
 ```
 
 The `class` keyword was introduced to JavaScript relatively lately, in ES6 (2015). Compared to Python we define the logic of the object creation in the `constructor` method as opposed to the `__init__` magic method in Python. Also note that the methods in JS aren't defined with a specific keyword like `function` for functions or `def` in Python classes. The `this` keyword is analogous to `self` in Python though there are some differences.
@@ -89,8 +91,6 @@ class TodoList {
 }
 ```
 
-
-
 ## Arrow functions
 
 Functions in JavaScript are "first-class citizens" which means that  they can be assigned to a variable, passed as an argument to another function,  returned from a function, and has properties and methods assigned to it. In ES6 a new version of defining function was added. This is called Arrow function.
@@ -151,6 +151,10 @@ async function logComments() {
 }
 ```
 
+When calling an `async` function we have to use the `await` keyword and each function that has a call to an asynchronous function is itself also `async`ronous.
+
+Asynchronous programming with callbacks, promises and async/await is important part of JavaScript, however it can get quite complex so we'll leave it at this. However if you're serious about programming in JavaScript, I encourage you to delve deeper into this. A good place to start is MDN's [Asynchronous JavaScript](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Async_JS).
+
 **Todo app**
 
 Let's use this knowledge to further our Todo Application. Simulate adding todo as if we were sending it to the server.
@@ -165,8 +169,6 @@ addTodo(description, callback) {
     }, 1000);
 }
 ```
-
-
 
 Let's check two more operators that are often found in modern JavaScript.
 
