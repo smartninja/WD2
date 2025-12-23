@@ -78,13 +78,9 @@ Some examples of these tasks are:
   - **Example**: A scientific research website needs to perform complex calculations for data analysis.
   - **Implementation**: User requests trigger the submission of data for analysis, which is quickly saved to a queue. A cron job runs in the background, picking up tasks from the queue, performing the calculations, and storing the results for users to access later.
 
-
-
-
-
 ## Create CLI for Flask
 
-In **scheduled.py** file add a new function:
+Create a new file, called **scheduled.py** with a new function:
 
 ```python
 import models
@@ -103,6 +99,12 @@ def register_commands(app):
             else:
                 print(f'skipping user {user}')
 
+```
+
+In the code above we've used a new configuration variable `THUMB_FOLDER`. This points to the folder where we'd like to save our cron-generated thumbnail images. Let's add this configuration in the `config.py`
+
+```python
+THUMB_FOLDER = './upload/thumbnails'
 ```
 
 In **main.py** we have to import the function and call it to register the CLI commands.
@@ -135,9 +137,7 @@ flask --app main.py process_images
 
 ### Add the cropping function
 
-Let's add the functionality for cropping images. This is the working part of the program and it could be anything; image processing, backups, data aggregation ...
-
-The internals of this function are not crucial, but it opens the image, cuts it in the pre-set dimensions and saves it in the different location
+Let's add the functionality for cropping images. This is the working part of the program and it could be anything; image processing, backups, data aggregation ... We'll add this function in the `scheduled.py`, and call it in the line where we currently have a comment `# here we should actually do the work`. The internals of this function are not crucial, but it opens the image, cuts it in the pre-set dimensions and saves it in the different location.
 
 ```python
 from os import path
@@ -160,7 +160,15 @@ def create_thumbnail(user, app):
     models.update_user(id=user.id, avatar_file=thumbnail_path)
 ```
 
-We're using the `app.root_path` so we can run it with Cron.
+In the line where we're opening we're opening the image, we're using an absolute path with the `app.root_path`. We need to do this so we can run it with external program such as Cron.
+
+Additionally, we're using `PIL` library for cropping the image. To be able to use this library, we need to add it to requirements and install it via pip. Add the following line to `requrements.txt`:
+
+```
+Pillow==12.0.0
+```
+
+and then run `pip install -r requirements.txt`. Pillow is a replacement package for a deprecated and now unmaintained PIP library. The import code stayed the same for backwards compatibility reasons.
 
 ## Configure Cron
 
@@ -171,6 +179,20 @@ Add a **crontab entry** with crontab -e
 ```
 
 When we save the file, the processing of the images will start on the first minute of every hour, every day in the year.
+
+## How do we solve this problems in real-world python applications
+
+In this lesson we've learned about the idea of scheduled jobs and how to implement them with cron. Through this we learned how cron itself works, how do we configure it, in which cases we use scheduled jobs, etc. We've also seen how can we register a command in a flask application that we can then start through a CLI. This can come in handy for many other purposes than only triggering a scheduled job via cron.
+
+In fact, in large scale real-world Python applications, we don't run schedule jobs simplya through cron. We use a task queue library like **Celery**. This approach offers us much more flexibility and power and provides us with functionalities like retry on failure, parallel workers, rate limiting, task monitoring, distributed execution ets. It does, however bring in additional overhead and complexity of another library and a message broker service. It still needs to be triggered which can be done through *Celery beat* or again with a cron job.
+
+You can read about Celery in it's [documentation](https://docs.celeryq.dev/en/latest/getting-started/first-steps-with-celery.html) or read about how to deploy a [Flask app with a background worker](https://render.com/docs/deploy-celery) on Render (that we used in WD1).
+
+### Cron vs. workers
+
+We learned about cron jobs because they are simpler to set up and understand and since they are language independent, they can be used in many different use cases. In a Flask context they are useful when we need to run tasks on a fixed schedule, when the task's logic is relatively simple and predictable, and when we wont to avoid infrastructure overhead. They can reliably be used for (nightly) batch jobs, cleanup tasks, backups or periodic metrics aggregation.
+
+Workers on the other hand should be used when tasks are triggered by user actions, they're slow and/or unpredictable, we need retries, progress, or status visibility and when we expect the these tasks to be growing a lot when the application scales up.
 
 ## Homework
 

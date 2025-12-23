@@ -22,11 +22,11 @@ class User(db.Model):
     avatar_file = mapped_column(String, unique=True)
 
     def __repr__(self):
-        return {
+        return str({
             'id': self.id,
             'name': self.name,
             'email': self.email,
-        }
+        })
     
     def serialize(self):
         return {   
