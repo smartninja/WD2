@@ -37,9 +37,21 @@ The second and the third line have a similar process, only in the last row, the 
 
 The lesson here is **know what types you're working with**. And anyway, you shouldn't ever need to compare an Array to a Number. You might want to compare `[].length()` to a Number, but this is a Number to Number comparison and no type coercion happens.
 
-
-
 Read more about what is happening here in a [blog post](https://2ality.com/2012/01/object-plus-object.html) by Dr. Axel Rauschmayer.
+
+Because of this JS behavior, the following code is a valid JS code:
+
+```javascript
+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]][([][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]((![]+[])[+!+[]]+(![]+[])[!+[]+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]+(!![]+[])[+[]]+([][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[+!+[]+[!+[]+!+[]+!+[]]]+[+[]]+([+[]]+![]+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]])[!+[]+!+[]+[+[]]])()
+```
+
+and it "translates" to:
+
+```javascript
+alert(0);
+```
+
+How does this work is explained in more detail on the [RIT Computing Security Blog](https://ritcsec.wordpress.com/2022/04/30/xss-with-javascript-type-coercion/) article. This "weirdness" of Javascript was used to be able to insert potentially malicious code on the eBay marketplace. Read more about it in the [ArsTechica article](https://arstechnica.com/information-technology/2016/02/ebay-has-no-plans-to-fix-severe-bug-that-allows-malware-distribution/).
 
 ## Comparison
 
@@ -53,8 +65,11 @@ console.log(" \t\r\n" == 0);
 console.log('' == 0);
 
 // And these do too!
-if ({}) // ...
-if ([]) // ...
+if ({}) // ... passes the condition
+if ([]) // ... passes the condition
+
+// however ...
+console.log([] == true); // prints 'false'
 ```
 
 Again in all of these cases type conversion is happening. Think about what is happening here and why do we get these results.
@@ -70,7 +85,7 @@ NaN == NaN // false
 NaN === NaN // false
 
 
-typeof NaN == 'number'
+typeof NaN == 'number' // true
 ```
 
 To make sure a variable is `NaN` we should always use `Number.isNaN()` function to test if a value is not a number.
@@ -88,6 +103,30 @@ Even if two separate objects hold the same values, the comparisons among them wi
 
 **It is best to avoid object comparison in JavaScript.** If this can not be achieved, a library like Lodash can provide such a functionality.
 
+### Example
+
+Consider the buggy code:
+
+```javascript
+if (user.isAuthenticated) {
+  allowAccess();
+}
+```
+
+When the `user.isAuthenticated` has any if the following values:
+
+```javascript
+"false"   // truthy
+"0"       // truthy
+[]        // truthy
+{}        // truthy
+```
+
+the access would be allowed. This could enable authentication bypasses for unauthenticated users.
+
+> “Most JavaScript auth bugs are not injection — they’re comparisons.”
+> 
+
 ## Implicit semicolons
 
 JavaScript engine automatically inserts semicolons (`;`) at the end of the line. Most of the time this works well, there are only a few notable execptions to this rule. The following code (without semicolons) will **not work correctly**:
@@ -99,13 +138,59 @@ let name = 'janez'
 
 Here, the semicolon doesn't get inserted at the end of the first line and the engine thinks that the expressions continues with the bracket `(`. This also happens if we'd have square bracket `[` for an Array. We could avoid this by adding a a semicolon only in this cases. Mislav Marohnić [argues](https://mislav.net/2010/05/semicolons/) that this kind of code is fine. Most developers would disagree and just recommend that you should **always use semicolons** in your JavaScript programs. 
 
+### Examples
 
+Consider what does the following code do:
+
+```javascript
+function getAge(user) {
+    return
+    {
+        age: user.age
+    }
+}
+
+const user = {
+    name: 'Karlo',
+    age: 42,
+}
+const age = getAge(user);
+```
+
+What is the value of `const age`?
+
+We might expect that the value is `42`, but due to the automatic semicolon insertion after the `return` statement, the function returns `undefined`.
+
+However a semicolon is **not** automatically inserted on all unexpected new lines. Consider one more example ...
+
+```javascript
+function getAge(user) {
+    if(user.age > 18)
+    return user.age
+}
+
+const user = {
+    name: 'Tin',
+    age: 12,
+}
+
+console.log(getAge(user))
+```
+
+This code again returns `undefined`, while a changed version with the added semicolon at the end of the if statement
+
+```javascript
+function getAge(user) {
+    if(user.age > 18);
+    return user.age
+}
+```
+
+would return the expected `12` in the upper example.
 
 ## typeof null == 'object'
 
 This is regarded as a mistake in JavaScript and doesn't have a reasonable explanation (like other iregularities above might have). Be careful when using `typeof` operator.
-
-
 
 ## Object mutation
 
@@ -131,8 +216,6 @@ shallowCopy.address.city = "Los Angeles"; // Modifies the nested object
 console.log(original.address.city); // "Los Angeles" (unexpected change)
 ```
 
-
-
 ## Wrong use of this
 
 ```javascript
@@ -156,7 +239,7 @@ const myGame = new Game();
 myGame.restart();
 ```
 
-The `this` keyword is referencing the curenet object. But if it's referenced outside of the scope of the Object, `this` can be undefined.
+The `this` keyword is referencing the current object. But if it's referenced outside of the scope of the Object, `this` can be undefined.
 
 
 
@@ -164,8 +247,6 @@ The `this` keyword is referencing the curenet object. But if it's referenced out
 
 Javascript is weird - javascript compiled to 10 characters: https://www.youtube.com/watch?v=sRWE5tnaxlI
 
-
-
 ## Homework
 
-In a short paragraph explain what happens when we do `[] - []` and what kind of 
+In a short paragraph explain step by step what happens when we do `[] - []` in JavaScript, what happens when we do `[] + []` an why is the return type of these operations different.
