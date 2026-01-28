@@ -1,0 +1,10 @@
+<div class="letters">
+    @for (letter of 'abcčdefghijklmnopqrsštuvwxyzž'.split(''); track $index) {
+      <button
+      (click)="handleClick(letter)"
+      [disabled]="disabledLetters().includes(letter)"
+      >
+      {{ letter }}
+    </button>
+    }
+   </div>

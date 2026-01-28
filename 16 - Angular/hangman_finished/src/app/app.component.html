@@ -1,0 +1,34 @@
+<!-- <h1>🪢 Hangman Game</h1>
+<p>Word: {{ maskedWord }}</p>
+<p>Mistakes: {{ mistakes }} / {{ maxMistakes }}</p>
+
+<div class="letters">
+  <button *ngFor="let letter of 'abcdefghijklmnopqrstuvwxyz'.split('')"
+          [disabled]="guessedLetters.includes(letter) || gameStatus !== 'playing'"
+          (click)="guess(letter)">
+    {{ letter }}
+  </button>
+</div>
+
+<p *ngIf="gameStatus === 'won'" class="result">🎉 You won!</p>
+<p *ngIf="gameStatus === 'lost'" class="result">💀 You lost! Word was: {{ secretWord }}</p>
+<button (click)="resetGame()">🔄 Restart</button> -->
+
+
+
+<h1>Hangman</h1>
+<p class="obscured">Word: {{ obscuredWord }} </p>
+<p>Mistakes: {{ mistakes }} / {{ MAX_MISTAKES }} </p>
+
+<p>Letters guessed: {{ guessedLetters.join(', ') }}</p>
+
+<app-keyboard (keyboardPress)="guess($event)" [disabledLetters]="guessedLetters"></app-keyboard>
+
+@if (gameStatus == 'won'){
+  <p class="result">🎉 You won!</p>
+}
+@if (gameStatus == 'lost') {
+  <p class="result">💀 You lost! Word was: "{{ secretWord }}" </p>
+}
+<button (click)="restartGame()">🔄 Restart</button>
+
